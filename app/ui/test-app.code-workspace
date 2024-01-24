@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../test-app"
+		},
+		{
+			"path": "../.."
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "nextjs-dashboard/node_modules/typescript/lib"
+	}
+}
