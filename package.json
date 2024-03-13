@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.0.18",
     "@tailwindcss/forms": "^0.5.7",
     "@types/node": "20.5.7",
+    "@vercel/blob": "^0.22.1",
     "@vercel/postgres": "^0.5.1",
     "@zeit/next-css": "^1.0.1",
     "autoprefixer": "10.4.15",
@@ -33,6 +34,7 @@
     "typescript": "5.2.2",
     "use-debounce": "^10.0.0",
     "util": "^0.12.5",
+    "yarn": "^1.22.22",
     "zod": "^3.22.2"
   },
   "devDependencies": {

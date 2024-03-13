@@ -8,6 +8,7 @@ import {
   User,
   Revenue,
   TopicsTable,
+  CategoryTable
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -92,35 +93,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(
-  query: string,
-  currentPage: number,
-) {
-  noStore();
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  try {
-    const topics = await sql<TopicsTable>`
-      SELECT
-        topics.id,
-        topics.topic,
-        topics.category,
-        topics.info,
-        topics.website
-      FROM topics
-      WHERE
-        topics.topic::text ILIKE ${`%${query}%`} OR
-        topics.info::text ILIKE ${`%${query}%`} 
-      ORDER BY topics.topic DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
-    `;
-
-    return topics.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
-  }
-}
 
 export async function fetchInvoicesPages(query: string) {
   noStore();
@@ -227,5 +200,91 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error);
     throw new Error('Failed to fetch user.');
+  }
+}
+
+export async function fetchCategories() {
+  noStore();
+  try {
+    const categories = await sql<CategoryTable>`
+      SELECT *
+      FROM categories
+    `;
+
+    return categories.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch categories.');
+  }
+}
+
+export async function fetchCategoryTopics(
+  category_id:string,
+  query:string,
+) {
+  noStore();
+  try {
+    const topics = await sql<TopicsTable>`
+      SELECT *
+      FROM topics
+    `;
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch relevant topics.');
+  }
+}
+
+export async function fetchFilteredInvoices(
+  query: string,
+  currentPage: number,
+) {
+  noStore();
+
+  try {
+    const topics = await sql<TopicsTable>`
+      SELECT
+        topics.id,
+        topics.topic,
+        topics.category,
+        topics.info,
+        topics.website
+      FROM topics
+      WHERE
+        topics.topic::text ILIKE ${`%${query}%`} OR
+        topics.info::text ILIKE ${`%${query}%`} 
+      ORDER BY topics.topic DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
+
+export async function fetchFilteredTopics(
+  query: string,
+) {
+  noStore();
+  try {
+    const topics = await sql<TopicsTable>`
+      SELECT
+        topics.id,
+        topics.topic,
+        topics.category,
+        topics.info,
+        topics.website
+      FROM topics
+      WHERE
+        topics.topic::text ILIKE ${`%${query}%`} OR
+        topics.info::text ILIKE ${`%${query}%`} 
+      ORDER BY topics.topic DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
   }
 }

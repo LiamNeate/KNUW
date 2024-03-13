@@ -4,7 +4,6 @@ import AccordionExample from '@/app/ui/search/collapse';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { fetchInvoicesPages } from '@/app/lib/data';
 import { Suspense } from 'react';
-import Accordion from 'react-bootstrap/Accordion';
  
 export default async function Page({
   searchParams,
@@ -18,8 +17,8 @@ export default async function Page({
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchInvoicesPages(query);
   return (
-    <div className="w-full">
-      <AccordionExample/>
+    <div className="w-full" style={{"width": "100%"}}>
+      <AccordionExample query={query}/>
       <div className="flex w-full items-center justify-between">
         <h1 className={`text-2xl`}>Results</h1>
       </div>

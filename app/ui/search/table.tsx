@@ -1,6 +1,4 @@
-import Image from 'next/image';
-import InvoiceStatus from '@/app/ui/search/status';
-import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
+
 import { fetchFilteredInvoices } from '@/app/lib/data';
 
 export default async function InvoicesTable({

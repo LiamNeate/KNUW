@@ -44,14 +44,6 @@ export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
   amount: number;
 };
 
-export type TopicsTable = {
-  id: string;
-  topic: string;
-  category_id: string;
-  info: string;
-  website: string;
-};
-
 export type CustomersTableType = {
   id: string;
   name: string;
@@ -82,4 +74,17 @@ export type InvoiceForm = {
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+export type TopicsTable = {
+  id: string;
+  topic: string;
+  category_id: string;
+  info: string;
+  website: string;
+};
+
+export type CategoryTable = {
+  id: string;
+  category: string;
 };
