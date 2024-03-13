@@ -1,16 +1,26 @@
-import AcmeLogo from '@/app/ui/acme-logo';
-import LoginForm from '@/app/ui/login-form';
- 
-export default function LoginPage() {
+import KnuwLogo from '@/app/ui/knuw-logo';
+import Form from './form';
+
+export default function Page() {
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
-        <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
-          <div className="w-32 text-white md:w-36">
-            <AcmeLogo />
+    <main className="flex h-full flex-row bg-white">
+      <div className="h-screen w-1/2 bg-gray-400 p-10 flex items-center justify-center">
+        <div className="w-1/2 flex flex-col text-center h-1/4">
+          <div className='inline-block basis-1/2 align-middle'>
+            <strong className='text-7xl'>KNUW</strong>
+          </div>
+          <div className='inline-block basis-1/2 align-middle'>
+            <h2 className="italic">An efficient way to exchange advice and recommendations in your business</h2>
           </div>
         </div>
-        <LoginForm />
+      </div>
+      <div className="flex-col w-1/2 h-screen">
+        <div className="flex w-full justify-center items-end h-2/5">
+          <div className="w-32 text-black md:w-36">
+            <KnuwLogo />
+          </div>
+        </div>
+        <Form />
       </div>
     </main>
   );
