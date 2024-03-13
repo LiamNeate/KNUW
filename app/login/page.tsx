@@ -1,5 +1,5 @@
 import KnuwLogo from '@/app/ui/knuw-logo';
-import Form from './form';
+import LoginForm from '@/app/ui/login-form';
 
 export default function Page() {
   return (
@@ -20,7 +20,7 @@ export default function Page() {
             <KnuwLogo />
           </div>
         </div>
-        <Form />
+        <LoginForm />
       </div>
     </main>
   );
