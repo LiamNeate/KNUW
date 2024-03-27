@@ -32,7 +32,7 @@ export default async function Collapse({
     });
 
   return (
-    <div className='container' style={{"max-width": "100%"}}>
+    <div className='container' style={{"maxWidth": "100%"}}>
       <Accordion items={accordionItems} />
     </div>
   )
