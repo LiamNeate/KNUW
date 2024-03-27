@@ -10,7 +10,7 @@ export default async function Collapse({
 
   const relevantTopics = await fetchFilteredTopics(query);
 
-  var accordionItems = []
+  var accordionItems: { title: string; content: JSX.Element; }[] = []
 
   categories?.map(async (category) => 
     {
