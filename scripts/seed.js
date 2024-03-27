@@ -140,7 +140,8 @@ async function seedTopics(client) {
         website VARCHAR(255),
         documentation VARCHAR(255),
         notes VARCHAR(255),
-        blocked BOOLEAN
+        blocked BOOLEAN,
+        image VARCHAR(255)
       );
     `;
 
@@ -150,8 +151,8 @@ async function seedTopics(client) {
     const insertedTopics = await Promise.all(
       topics.map(
         (topic) => client.sql`
-        INSERT INTO topics (id, topic, category, info, website, documentation, notes, blocked)
-        VALUES (${topic.id}, ${topic.topic}, ${topic.category}, ${topic.info}, ${topic.website}, ${topic.documentation}, ${topic.notes}, ${topic.blocked})
+        INSERT INTO topics (id, topic, category, info, website, documentation, notes, blocked, image)
+        VALUES (${topic.id}, ${topic.topic}, ${topic.category}, ${topic.info}, ${topic.website}, ${topic.documentation}, ${topic.notes}, ${topic.blocked}, ${topic.image})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),

@@ -58,6 +58,12 @@ const categories = [
   { 
     id: '3958dc9e-798f-4377-85e9-fec4b6a6442a',
     category: 'Databases' 
+  },{ 
+    id: '3958dc9e-798f-4377-85e9-fec4b6a6442b',
+    category: 'Languages' 
+  },{ 
+    id: '3958dc9e-798f-4377-85e9-fec4b6a6442c',
+    category: 'Methods' 
   }
 ]
 
@@ -70,6 +76,27 @@ const topics = [
     website: 'www.website.com',
     documentation: 'www.website.com/docs',
     notes: 'Use it!',
+    image: '',
+    blocked: false
+  },{
+    id: '3958dc1b-798f-4377-85e9-fec4b6a6442b',
+    topic: 'Python',
+    category: '3958dc9e-798f-4377-85e9-fec4b6a6442b',
+    info: 'Info about Python',
+    website: 'www.website.com',
+    documentation: 'www.website.com/docs',
+    notes: 'Use it!',
+    image: '',
+    blocked: false
+  },{
+    id: '3958dc1b-798f-4377-85e9-fec4b6a6442c',
+    topic: 'SCRUM',
+    category: '3958dc9e-798f-4377-85e9-fec4b6a6442c',
+    info: 'Info about SCRUM',
+    website: 'www.website.com',
+    documentation: 'www.website.com/docs',
+    notes: 'Use it!',
+    image: '',
     blocked: false
   }
 ];

@@ -1,27 +1,22 @@
 "use client"
-
-import { useState } from 'react';
 import { AccordionData } from '../types';
-import AccordionItem from './AccordionItem';
+import {Accordion, AccordionItem} from "@nextui-org/react";
+import styles from './css/Accordion.module.css'
 
-function Accordion({ items }: { items: Array<AccordionData> }) {
-  const [currentIdx, setCurrentIdx] = useState(-1);
-  const btnOnClick = (idx: number) => {
-    setCurrentIdx(idx);
-  };
+export default function App({ items }: { items: Array<AccordionData> }) {
 
   return (
-    <ul className="accordion">
+    <Accordion variant="splitted">
       {items.map((item, idx) => (
         <AccordionItem
           key={idx}
-          data={item}
-          isOpen={idx === currentIdx}
-          btnOnClick={() => btnOnClick(idx)}
-        />
+          title={item.title}
+          className={styles.accord}
+        >
+          {item.content}
+          </AccordionItem>
       ))}
-    </ul>
+ 
+    </Accordion>
   );
 }
-
-export default Accordion;

@@ -1,5 +1,6 @@
 import Accordion from './Accordion';
-import { fetchCategories, fetchFilteredTopics } from '@/app/lib/data';
+import { fetchCategories, fetchFilteredTopics, fetchFilteredTopicsByCat } from '@/app/lib/data';
+import Link from 'next/link'
 
 export default async function Collapse({ 
   query 
@@ -12,24 +13,30 @@ export default async function Collapse({
 
   var accordionItems: { title: string; content: JSX.Element; }[] = []
 
-  categories?.map(async (category) => 
-    {
-      let test = {
-        title: category.category,
-        content: (
-          <div>
-            {relevantTopics?.map((topic) =>
-              <p
-                key={topic.id}
+  for (let item of categories){
+    const relevantTopicsPerCat = await fetchFilteredTopicsByCat(query, item.id);
+    let test = {
+      title: item.category+" ("+relevantTopicsPerCat.length+"/"+relevantTopics.length+")",
+      content: (
+        <div>
+          {relevantTopicsPerCat?.map((topic) =>
+            <p
+              key={topic.id}
+            >
+              <Link href={{
+                pathname: '/dashboard/topics',
+                query: { id: topic.id}
+              }}
               >
                 {topic.topic}
-              </p>
-            )}
-          </div>
-        )
-      }
-      accordionItems.push(test);
-    });
+              </Link>
+            </p>
+          )}
+        </div>
+      )
+    }
+    accordionItems.push(test);
+  }
 
   return (
     <div className='container' style={{"maxWidth": "100%"}}>

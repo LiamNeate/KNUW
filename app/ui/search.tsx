@@ -12,14 +12,10 @@ export default function Search({ placeholder }: { placeholder: string }) {
     console.log(`Searching... `+term);
     const params = new URLSearchParams(searchParams);
     params.set('/search', '');
-    params.set('page', '1');
+    console.log(pathname);
     if (term){
       params.set('query', term);
-      if (pathname.toString().includes("/search")){
-        replace(`${pathname}?${params.toString()}`);
-      } else {
-        replace(`${pathname}/search?${params.toString()}`);
-      }
+      replace("/dashboard/search"+`?${params.toString()}`)
     } else {
       params.delete('query');
       if (pathname.toString().includes("/search")){

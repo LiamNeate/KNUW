@@ -163,6 +163,15 @@ export function InvoicesMobileSkeleton() {
   );
 }
 
+export function SearchSkeleton() {
+  return (
+    <div className="mt-6 flow-root text-center">
+      Seaching...  
+    </div>
+  );
+}
+
+
 export function InvoicesTableSkeleton() {
   return (
     <div className="mt-6 flow-root">

@@ -263,6 +263,30 @@ export async function fetchFilteredInvoices(
   }
 }
 
+export async function fetchTopics(
+  query: string,
+) {
+  noStore();
+  try {
+    const topics = await sql<TopicsTable>`
+      SELECT
+        topics.id,
+        topics.topic,
+        topics.category,
+        topics.info,
+        topics.website
+      FROM topics
+      ORDER BY topics.topic DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
+
+
 export async function fetchFilteredTopics(
   query: string,
 ) {
@@ -279,6 +303,34 @@ export async function fetchFilteredTopics(
       WHERE
         topics.topic::text ILIKE ${`%${query}%`} OR
         topics.info::text ILIKE ${`%${query}%`} 
+      ORDER BY topics.topic DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
+
+export async function fetchFilteredTopicsByCat(
+  query: string,
+  topic: string,
+) {
+  noStore();
+  try {
+    const topics = await sql<TopicsTable>`
+      SELECT
+        topics.id,
+        topics.topic,
+        topics.category,
+        topics.info,
+        topics.website
+      FROM topics
+      WHERE
+        (topics.topic::text ILIKE ${`%${query}%`} OR
+        topics.info::text ILIKE ${`%${query}%`}) AND
+        topics.category::text ILIKE ${`${topic}`}
       ORDER BY topics.topic DESC
     `;
 
