@@ -19,7 +19,11 @@ export default async function Collapse({
         content: (
           <div>
             {relevantTopics?.map((topic) =>
-              <p>{topic.topic}</p>
+              <p
+                key={topic.id}
+              >
+                {topic.topic}
+              </p>
             )}
           </div>
         )
