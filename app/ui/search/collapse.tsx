@@ -14,7 +14,6 @@ export default async function Collapse({
 
   var accordionItems: { title: string; content: JSX.Element; }[] = []
 
-  const response = await list();
 
   for (let item of categories){
     const relevantTopicsPerCat = await fetchFilteredTopicsByCat(query, item.id);
@@ -33,9 +32,9 @@ export default async function Collapse({
               passHref={true}
               >
                   <div>
-                  <img src={topic.image} alt="Avatar"/>
+                  <img src={topic.image} alt="Icon"/>
                     <h4><b>{topic.topic}</b></h4>
-                    <p>Architect & Engineer</p>
+                    <p>{topic.info}</p>
                     </div>
               </Link>
             </p>

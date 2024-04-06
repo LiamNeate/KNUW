@@ -292,12 +292,7 @@ export async function fetchTopic(
   noStore();
   try {
     const topics = await sql<TopicsTable>`
-      SELECT
-        topics.id,
-        topics.topic,
-        topics.category,
-        topics.info,
-        topics.website
+      SELECT *
       FROM topics
       WHERE
       topics.id::text ILIKE ${`${query}`}
