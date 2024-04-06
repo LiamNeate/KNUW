@@ -1,22 +1,36 @@
-import CardWrapper from '@/app/ui/dashboard/cards';
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
-import { Card } from '@/app/ui/dashboard/cards';
+"use client"
+
 import { lusitana } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { 
-  RevenueChartSkeleton, 
-  LatestInvoicesSkeleton,
-  CardsSkeleton
-} from '@/app/ui/skeletons';
- 
+import { fetchTopic} from '@/app/lib/data';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link'
+
 export default async function Page() {
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get('id') || '';
+  const topicInfo = await fetchTopic(query);
 
   return (
     <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Dashboard
-      </h1>
+      {topicInfo?.map((topic) =>
+      <div>
+        <h1>
+          {topic.topic}
+        </h1>
+          <div>
+          <Link href={{
+                pathname: '/dashboard/image',
+                query: { id: topic.id}
+              }}
+              >
+                <img src={topic.image} alt="Avatar"/>
+              </Link>
+            <h4><b>{topic.topic}</b></h4>
+            <p>{topic.info}</p>
+          </div>
+            </div>
+          )}
     </main>
   );
 }

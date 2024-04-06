@@ -1,6 +1,7 @@
 import Accordion from './Accordion';
 import { fetchCategories, fetchFilteredTopics, fetchFilteredTopicsByCat } from '@/app/lib/data';
 import Link from 'next/link'
+import { list } from '@vercel/blob';
 
 export default async function Collapse({ 
   query 
@@ -12,6 +13,8 @@ export default async function Collapse({
   const relevantTopics = await fetchFilteredTopics(query);
 
   var accordionItems: { title: string; content: JSX.Element; }[] = []
+
+  const response = await list();
 
   for (let item of categories){
     const relevantTopicsPerCat = await fetchFilteredTopicsByCat(query, item.id);
@@ -27,8 +30,13 @@ export default async function Collapse({
                 pathname: '/dashboard/topics',
                 query: { id: topic.id}
               }}
+              passHref={true}
               >
-                {topic.topic}
+                  <div>
+                  <img src={topic.image} alt="Avatar"/>
+                    <h4><b>{topic.topic}</b></h4>
+                    <p>Architect & Engineer</p>
+                    </div>
               </Link>
             </p>
           )}

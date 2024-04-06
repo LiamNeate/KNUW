@@ -12,6 +12,15 @@ const nextConfig = {
           },
         ],
       },
+
+      images: {
+        remotePatterns: [
+          {
+            protocol: 'https',
+            hostname: 'eesarv0hsj9j2qg5.public.blob.vercel-storage.com',
+          },
+        ],
+      },
 };
 
 module.exports = nextConfig;

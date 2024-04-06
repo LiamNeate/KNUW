@@ -6,7 +6,7 @@ import styles from './css/Accordion.module.css'
 export default function App({ items }: { items: Array<AccordionData> }) {
 
   return (
-    <Accordion variant="splitted">
+    <Accordion>
       {items.map((item, idx) => (
         <AccordionItem
           key={idx}

@@ -286,6 +286,30 @@ export async function fetchTopics(
   }
 }
 
+export async function fetchTopic(
+  query: string,
+) {
+  noStore();
+  try {
+    const topics = await sql<TopicsTable>`
+      SELECT
+        topics.id,
+        topics.topic,
+        topics.category,
+        topics.info,
+        topics.website
+      FROM topics
+      WHERE
+      topics.id::text ILIKE ${`${query}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch invoices.');
+  }
+}
+
 
 export async function fetchFilteredTopics(
   query: string,
@@ -325,7 +349,9 @@ export async function fetchFilteredTopicsByCat(
         topics.topic,
         topics.category,
         topics.info,
-        topics.website
+        topics.website,
+        topics.blocked,
+        topics.image
       FROM topics
       WHERE
         (topics.topic::text ILIKE ${`%${query}%`} OR

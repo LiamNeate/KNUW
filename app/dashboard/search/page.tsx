@@ -14,14 +14,12 @@ export default async function Page({
   };
 }) {
   const query = searchParams?.query || '';
-  const currentPage = Number(searchParams?.page) || 1;
-  const totalPages = await fetchInvoicesPages(query);
   return (
     <div className="w-full" style={{"width": "100%"}}> 
       <div className="flex w-full items-center justify-between">
         <h1 className={`text-2xl`}>Results</h1>
       </div>
-      <Suspense key={query + currentPage} fallback={<SearchSkeleton />}>
+      <Suspense  fallback={<SearchSkeleton />}>
         <AccordionExample query={query}/>
       </Suspense>
     </div>

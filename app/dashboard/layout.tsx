@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-screen flex-row md:overflow-hidden">
+    <div className="h-screen flex-row">
       <div className="w-screen flex-grow pt-5 h-20 content-center">
         <Suspense>
           <TopNav />
