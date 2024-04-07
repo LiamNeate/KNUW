@@ -24,7 +24,7 @@ export default async function Collapse({
       content: (
         <div className="grid grid-cols-10 grid-flow-row-dense gap-2 text-center">
           {relevantTopicsPerCat?.map((topic) =>
-            <Card className=" basis-full">
+            <Card key={topic.id} className=" basis-full">
               <CardBody className="overflow-visible">
               <Link href={{
                 pathname: '/dashboard/topics',

@@ -1,9 +1,9 @@
 "use server"
 
-import { fetchTopic, fetchComments, fetchEndorsementsPerTopic, fetchUserComment, fetchUserId } from '@/app/lib/data';
+import { fetchTopic, fetchComments, fetchEndorsementsPerTopic, fetchUserComment } from '@/app/lib/data';
 import React from "react";
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
-import { auth  } from '../../../auth';
+import { auth } from '../../../auth';
 import { updateRating } from '@/app/lib/actions';
 import Rating from '@mui/material/Rating';
 import Select from '@mui/material/Select';
@@ -15,6 +15,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Toast from 'react-bootstrap/Toast';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 /*
 import { lusitana } from '@/app/ui/fonts';
@@ -67,10 +68,11 @@ export default async function Page({
   searchParams: {id: string}
 }) {
 
-  const { user } = await auth()
+  const { data: session } = useSession();
 
-  const email = user?.email;
-  const userId = await fetchUserId(email);
+  const email = session?.user?.email?.toString()!;
+  const userId = session?.user?.id?.toString()!;
+
   try{
     const topicInfo = await fetchTopic(searchParams.id);
     const blocked = topicInfo[0].blocked ? "Yes" : "No";
@@ -143,7 +145,7 @@ export default async function Page({
                       <Rating name="read-only" value={comment.rating} readOnly />
                     </div>
                     <div>{renderSwitch(comment.recom)}</div>
-                    <div className="col-span-2 text-start">"{comment.comment}"</div>
+                    <div className="col-span-2 text-start"><q>{comment.comment}</q></div>
                     <div className="flex">
                       <p className='w-1/2'>👍{comment.likes}</p>
                       <p className='w-1/2'>👎{comment.dislikes}</p>
@@ -255,7 +257,7 @@ export default async function Page({
                       <TextField 
                         id="userId" 
                         name = 'userId'
-                        defaultValue={userId[0].id}
+                        defaultValue={userId}
                       />
                     </div>
                     <div className='invisible'>
@@ -300,7 +302,7 @@ export default async function Page({
                       <Rating name="read-only" value={comment.rating} readOnly />
                     </div>
                     <div>{renderSwitch(comment.recom)}</div>
-                    <div className="col-span-2 text-start">"{comment.comment}"</div>
+                    <div className="col-span-2 text-start"><q>{comment.comment}</q></div>
                     <div className="flex">
                       <p className='w-1/2'>👍{comment.likes}</p>
                       <p className='w-1/2'>👎{comment.dislikes}</p>

@@ -369,7 +369,7 @@ export async function fetchComments(
 ){
   noStore();
   try {
-    const topics = await sql<ScoresTable>`
+    const topics = await sql`
       SELECT 
         users.fname,
         users.sname,
@@ -401,7 +401,7 @@ export async function fetchEndorsementsPerTopic(
 ){
   noStore();
   try {
-    const topics = await sql<EndorsementsTable>`
+    const topics = await sql`
       SELECT 
         users.fname,
         users.sname,
@@ -428,7 +428,7 @@ export async function fetchUserComment(
 ){
   noStore();
   try {
-    const topics = await sql<ScoresTable>`
+    const topics = await sql`
       SELECT 
         scores.rating,
         scores.recom,
@@ -449,33 +449,13 @@ export async function fetchUserComment(
   }
 }
 
-export async function fetchUserId(
-  email: string
-){
-  noStore();
-  try {
-    const topics = await sql<ScoresTable>`
-      SELECT 
-        id
-      FROM users
-      WHERE
-        email = ${`${email}`}
-    `;
-
-    return topics.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch user id.');
-  }
-}
-
 export async function checkExists(
   id: string,
   topic: string
 ){
   noStore();
   try {
-    const topics = await sql<ScoresTable>`
+    const topics = await sql`
       SELECT 
         scores.id AS scoresId,
         comments.id AS commentsId
