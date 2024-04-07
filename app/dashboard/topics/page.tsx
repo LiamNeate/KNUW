@@ -1,6 +1,6 @@
 "use server"
 
-import { fetchTopic, fetchComments, fetchEndorsementsPerTopic, fetchUserComment } from '@/app/lib/data';
+import { fetchTopic, fetchComments, fetchEndorsementsPerTopic, fetchUserComment, fetchUserId } from '@/app/lib/data';
 import React from "react";
 import {Card, CardHeader, CardBody, Image} from "@nextui-org/react";
 import { auth } from '../../../auth';
@@ -68,10 +68,10 @@ export default async function Page({
   searchParams: {id: string}
 }) {
 
-  const { data: session } = useSession();
+  const user = await auth()
 
-  const email = session?.user?.email?.toString()!;
-  const userId = session?.user?.id?.toString()!;
+  const email = user?.user?.email!;
+  const userId = await fetchUserId(email);
 
   try{
     const topicInfo = await fetchTopic(searchParams.id);

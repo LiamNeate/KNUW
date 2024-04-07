@@ -449,6 +449,26 @@ export async function fetchUserComment(
   }
 }
 
+export async function fetchUserId(
+  email: string
+){
+  noStore();
+  try {
+    const topics = await sql`
+      SELECT 
+        id
+      FROM users
+      WHERE
+        email = ${`${email}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user id.');
+  }
+}
+
 export async function checkExists(
   id: string,
   topic: string
