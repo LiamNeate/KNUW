@@ -1,7 +1,6 @@
 import Accordion from './Accordion';
 import { fetchCategories, fetchFilteredTopics, fetchFilteredTopicsByCat } from '@/app/lib/data';
 import Link from 'next/link'
-import { list } from '@vercel/blob';
 
 export default async function Collapse({ 
   query 

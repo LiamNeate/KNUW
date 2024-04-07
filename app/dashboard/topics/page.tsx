@@ -43,7 +43,7 @@ export default async function Page({
 }) {
 
   const topicInfo = await fetchTopic(searchParams.id);
-  const blocked = "Yes";
+  const blocked = topicInfo[0].blocked ? "Yes" : "No";
 
   return(
     <div className="flex flex-row justify-between">

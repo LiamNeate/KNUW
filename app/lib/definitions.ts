@@ -79,10 +79,14 @@ export type InvoiceForm = {
 export type TopicsTable = {
   id: string;
   topic: string;
-  category_id: string;
+  category: string;
   info: string;
   website: string;
-};
+  documentation: string;
+  notes: string;
+  blocked: string;
+  image: string;
+}
 
 export type CategoryTable = {
   id: string;

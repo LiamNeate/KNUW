@@ -1,4 +1,4 @@
-import UploadForm from '@/app/ui/image/form';
 export default function Page(){
-  return <UploadForm />;
+  <h1>WORK IN PROGRESS</h1>
+  //return <UploadForm />;
 }

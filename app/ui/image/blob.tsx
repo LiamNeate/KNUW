@@ -1,3 +1,4 @@
+/*
 'use client';
  
 import type { PutBlobResult } from '@vercel/blob';
@@ -44,3 +45,4 @@ export default function AvatarUploadPage() {
     </>
   );
 }
+*/

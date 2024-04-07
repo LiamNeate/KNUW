@@ -1,3 +1,4 @@
+/*
 import { list } from '@vercel/blob';
 import Image from 'next/image';
  
@@ -23,3 +24,4 @@ export async function Images() {
     </section>
   );
 }
+*/
