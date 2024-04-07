@@ -39,6 +39,14 @@ export type LatestInvoice = {
   amount: string;
 };
 
+export type Scores = {
+  id: string
+  user_id: string
+  rating: number
+  recom: number
+  comment: string
+}
+
 // The database returns a number for amount, but we later format it to a string with the formatCurrency function
 export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
   amount: number;
@@ -92,3 +100,21 @@ export type CategoryTable = {
   id: string;
   category: string;
 };
+
+export type ScoresTable = {
+  id: string;
+  topic_id: string;
+  user_id: string;
+  rating: number;
+  recom: number;
+  complete: boolean;
+  endorsements: string;
+}
+
+export type EndorsementsTable = {
+  id: string;
+  topic_id: string
+  giver_id: string
+  reciever_id: string
+  reason: string
+}

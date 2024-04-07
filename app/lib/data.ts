@@ -8,7 +8,9 @@ import {
   User,
   Revenue,
   TopicsTable,
-  CategoryTable
+  CategoryTable,
+  ScoresTable,
+  EndorsementsTable
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -295,7 +297,7 @@ export async function fetchTopic(
       SELECT *
       FROM topics
       WHERE
-      topics.id::text ILIKE ${`${query}`}
+      topics.id = ${`${query}`}
     `;
 
     return topics.rows;
@@ -320,8 +322,8 @@ export async function fetchFilteredTopics(
         topics.website
       FROM topics
       WHERE
-        topics.topic::text ILIKE ${`%${query}%`} OR
-        topics.info::text ILIKE ${`%${query}%`} 
+        topics.topic ILIKE ${`%${query}%`} OR
+        topics.info ILIKE ${`%${query}%`} 
       ORDER BY topics.topic DESC
     `;
 
@@ -359,5 +361,135 @@ export async function fetchFilteredTopicsByCat(
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch invoices.');
+  }
+}
+
+export async function fetchComments(
+  query: string,
+){
+  noStore();
+  try {
+    const topics = await sql<ScoresTable>`
+      SELECT 
+        users.fname,
+        users.sname,
+        scores.rating,
+        scores.recom,
+        comments.comment,
+        comments.likes,
+        comments.dislikes,
+        comments.likes - comments.dislikes AS difference
+      FROM users, scores, comments
+      WHERE
+        users.id = scores.user_id
+        AND users.id = comments.user_id
+        AND scores.topic_id = ${`${query}`}
+        AND comments.topic = ${`${query}`}
+        AND scores.complete = true
+      ORDER BY difference DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch comments.');
+  }
+}
+
+export async function fetchEndorsementsPerTopic(
+  query: string,
+){
+  noStore();
+  try {
+    const topics = await sql<EndorsementsTable>`
+      SELECT 
+        users.fname,
+        users.sname,
+        scores.rating,
+        scores.recom,
+        scores.endorsements
+      FROM scores, users
+      WHERE 
+        scores.topic_id = ${`${query}`}
+        AND users.id = scores.user_id
+      ORDER BY scores.endorsements DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch comments.');
+  }
+}
+
+export async function fetchUserComment(
+  query: string,
+  email: string
+){
+  noStore();
+  try {
+    const topics = await sql<ScoresTable>`
+      SELECT 
+        scores.rating,
+        scores.recom,
+        comments.comment
+      FROM users, scores, comments
+      WHERE
+        users.id = scores.user_id
+        AND users.id = comments.user_id
+        AND scores.topic_id = ${`${query}`}
+        AND comments.topic = ${`${query}`}
+        AND users.email = ${`${email}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch comment.');
+  }
+}
+
+export async function fetchUserId(
+  email: string
+){
+  noStore();
+  try {
+    const topics = await sql<ScoresTable>`
+      SELECT 
+        id
+      FROM users
+      WHERE
+        email = ${`${email}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user id.');
+  }
+}
+
+export async function checkExists(
+  id: string,
+  topic: string
+){
+  noStore();
+  try {
+    const topics = await sql<ScoresTable>`
+      SELECT 
+        scores.id AS scoresId,
+        comments.id AS commentsId
+      FROM comments, scores
+      WHERE
+        scores.user_id = ${`${id}`}
+        AND scores.topic_id = ${`${topic}`}
+        AND comments.user_id = ${`${id}`}
+        AND comments.topic = ${`${topic}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user id.');
   }
 }

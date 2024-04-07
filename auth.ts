@@ -5,6 +5,8 @@ import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcryptjs';
+import type { NextAuthOptions } from 'next-auth'
+
  
 async function getUser(email: string): Promise<User | undefined> {
   try {
@@ -40,3 +42,7 @@ export const { auth, signIn, signOut } = NextAuth({
     }),
 ],
 });
+
+export const authOptions: NextAuthOptions = {
+  providers: [Credentials({})]
+}

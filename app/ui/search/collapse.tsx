@@ -1,6 +1,9 @@
 import Accordion from './Accordion';
 import { fetchCategories, fetchFilteredTopics, fetchFilteredTopicsByCat } from '@/app/lib/data';
+import Image from 'next/image';
 import Link from 'next/link'
+import React from "react";
+import {Card, CardBody} from "@nextui-org/react";
 
 export default async function Collapse({ 
   query 
@@ -19,8 +22,30 @@ export default async function Collapse({
     let test = {
       title: item.category+" ("+relevantTopicsPerCat.length+"/"+relevantTopics.length+")",
       content: (
-        <div>
+        <div className="grid grid-cols-10 grid-flow-row-dense gap-2 text-center">
           {relevantTopicsPerCat?.map((topic) =>
+            <Card className=" basis-full">
+              <CardBody className="overflow-visible">
+              <Link href={{
+                pathname: '/dashboard/topics',
+                query: { id: topic.id}
+              }}
+              passHref={true}
+              >
+                  <div className='text-center flex flex-wrap justify-center'>
+                    <Image
+                      alt="Card background"
+                      className="object-cover rounded-xl"
+                      src={topic.image? topic.image : '/no-image-icon.png'}
+                      width={100}
+                      height={100}
+                    />
+                    <h4><b>{topic.topic}</b></h4>
+                  </div>
+              </Link>
+              </CardBody>
+            </Card>
+          /*
             <p
               key={topic.id}
             >
@@ -31,12 +56,19 @@ export default async function Collapse({
               passHref={true}
               >
                   <div>
-                  <img src={topic.image} alt="Icon"/>
-                    <h4><b>{topic.topic}</b></h4>
-                    <p>{topic.info}</p>
-                    </div>
+                  <Image
+                    alt="Card background"
+                    className="object-cover rounded-xl"
+                    src={topic.image? topic.image : '/no-image-icon.png'}
+                    width={100}
+                    height={100}
+                  />
+                  <h4><b>{topic.topic}</b></h4>
+                  <p>{topic.info}</p>
+                  </div>
               </Link>
             </p>
+            */
           )}
         </div>
       )

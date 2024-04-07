@@ -103,6 +103,7 @@ const topics = [
 
 const comments = [
   {
+    id: 'c5d901a7-c673-41f5-9d2b-1251e706a53d',
     comment: 'Very good! Used it recently',
     topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
     user_id: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
@@ -110,11 +111,108 @@ const comments = [
     dislikes: 1
   },
   {
+    id: 'b57f8028-a5c5-4107-bd32-d5a7403a1679',
     comment: 'in terms of?',
     topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
     user_id: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
     likes: 1,
     dislikes: 5
+  },
+  {
+    id: 'c5d901a7-c673-41f5-9d2b-1251e706a53e',
+    comment: 'Quite good, would reccomend',
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    user_id: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    likes: 6,
+    dislikes: 0
+  },
+  {
+    id: 'b57f8028-a5c5-4107-bd32-d5a7403a1678',
+    comment: 'No better alternative',
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    likes: 9,
+    dislikes: 1
+  }
+];
+
+const scores = [
+  {
+    id: '98d05691-9355-4311-a644-227eca680ef7',
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    user: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    rating: 4,
+    recom: 0,
+    endorsements: 3
+  },
+  {
+    id: 'd292e064-c9ec-4e5e-8ad3-b50b382fbb43',
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    user: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
+    rating: 5,
+    recom: 0,
+    endorsements: 0
+  },
+  {
+    id: '98d05691-9355-4311-a644-227eca680ef8',
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    user: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    rating: 5,
+    recom: 0,
+    endorsements: 3
+  },
+  {
+    id: 'd292e064-c9ec-4e5e-8ad3-b50b382fbb44',
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    user: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    rating: 5,
+    recom: 0,
+    endorsements: 1
+  }
+];
+
+const endorsements = [
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    reason: 'Really helped me out with making the right choice! A real expert',
+  },
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    reason: 'Very helpful and informative. Knows his stuff!',
+  },
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    reason: 'Thanks again for all the help!',
+  },
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-787f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    reason: 'Taught me all I know!',
+  },
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    reason: 'Class act!',
+  },
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-742f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    reason: 'Thanks again for all the help!',
+  },
+  {
+    topic: '3958dc1b-798f-4377-85e9-fec4b6a6442a',
+    giver: '3958dc9e-737f-4377-85e9-fec4b6a6442a',
+    reciever: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+    reason: 'Thanks again for all the help!',
   }
 ];
 
@@ -124,4 +222,6 @@ module.exports = {
   categories,
   topics,
   comments,
+  scores,
+  endorsements
 };

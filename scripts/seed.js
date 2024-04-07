@@ -5,6 +5,8 @@ const {
   categories,
   topics,
   comments,
+  scores,
+  endorsements,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -172,12 +174,12 @@ async function seedTopics(client) {
 
 async function seedComments(client) {
   try {
-    // Create the "revenue" table if it doesn't exist
+    // Create the "comments" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS comments (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         comment VARCHAR(255) NOT NULL,
-        topic UUID NOT NULL REFERENCES topics (id) ON DELETE CASCADE,
+        topic_id UUID NOT NULL REFERENCES topics (id) ON DELETE CASCADE,
         user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
         likes INTEGER,
         dislikes INTEGER
@@ -190,8 +192,8 @@ async function seedComments(client) {
     const insertedComments = await Promise.all(
       comments.map(
         (comment) => client.sql`
-        INSERT INTO comments (comment, topic, user_id, likes, dislikes)
-        VALUES (${comment.comment}, ${comment.topic}, ${comment.user_id}, ${comment.likes}, ${comment.dislikes})
+        INSERT INTO comments (id, comment, topic, user_id, likes, dislikes)
+        VALUES (${comment.id}, ${comment.comment}, ${comment.topic}, ${comment.user_id}, ${comment.likes}, ${comment.dislikes})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -209,6 +211,84 @@ async function seedComments(client) {
   }
 }
 
+async function seedScores(client) {
+  try {
+    //Create "scores" table if it doesn't exist
+    const createTable = await client.sql`
+    CREATE TABLE IF NOT EXISTS scores (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      topic_id UUID NOT NULL REFERENCES topics (id) ON DELETE CASCADE,
+      user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+      rating INTEGER,
+      recom INTEGER,
+      complete BOOLEAN,
+      endorsements INTEGER
+    );
+    `;
+
+    console.log(`Created "scores" table`);
+
+    // Insert data into the "scores" table
+    const insertedScores = await Promise.all(
+      scores.map(
+        (score) => client.sql`
+        INSERT INTO scores (id, topic_id, user_id, rating, recom, complete, endorsements)
+        VALUES (${score.id}, ${score.topic}, ${score.user}, ${score.rating}, ${score.recom}, true, ${score.endorsements})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedScores.length} scores`);
+
+    return {
+      createTable,
+      scores: insertedScores,
+    };
+  } catch (error) {
+    console.error('Error seeding scores:', error);
+    throw error;
+  }
+}
+
+async function seedEndorsements(client) {
+  try {
+    //Create "endorsements" table if it doesn't exist
+    const createTable = await client.sql`
+    CREATE TABLE IF NOT EXISTS endorsements (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      topic_id UUID NOT NULL REFERENCES topics (id) ON DELETE CASCADE,
+      giver_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+      reciever_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+      reason VARCHAR(255) NOT NULL
+    );
+    `;
+
+    console.log(`Created "endrosements" table`);
+
+    // Insert data into the "endorsements" table
+    const insertedEndorsements = await Promise.all(
+      endorsements.map(
+        (endorsement) => client.sql`
+        INSERT INTO endorsements (topic_id, giver_id, reciever_id, reason)
+        VALUES (${endorsement.topic}, ${endorsement.giver}, ${endorsement.reciever}, ${endorsement.reason})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedEndorsements.length} endorsements`);
+
+    return {
+      createTable,
+      endorsements: insertedEndorsements,
+    };
+  } catch (error) {
+    console.error('Error seeding endorsements:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -217,6 +297,8 @@ async function main() {
   await seedCategories(client);
   await seedTopics(client);
   await seedComments(client);
+  await seedScores(client);
+  await seedEndorsements(client);
 
   await client.end();
 }
