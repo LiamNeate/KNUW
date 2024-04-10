@@ -205,6 +205,25 @@ export async function getUser(email: string) {
   }
 }
 
+export async function fetchAllTopics() {
+  noStore();
+  try {
+    const allTops = await sql`
+      SELECT 
+        topics.id,
+        topics.topic,
+        categories.category
+      FROM topics
+      LEFT JOIN categories ON topics.category = categories.id
+    `;
+
+    return allTops.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch all topics.');
+  }
+}
+
 export async function fetchCategories() {
   noStore();
   try {
@@ -366,27 +385,70 @@ export async function fetchFilteredTopicsByCat(
 
 export async function fetchComments(
   query: string,
+  id: string
 ){
   noStore();
   try {
     const topics = await sql`
-      SELECT 
-        users.fname,
-        users.sname,
-        scores.rating,
-        scores.recom,
-        comments.comment,
-        comments.likes,
-        comments.dislikes,
-        comments.likes - comments.dislikes AS difference
-      FROM users, scores, comments
-      WHERE
-        users.id = scores.user_id
-        AND users.id = comments.user_id
-        AND scores.topic_id = ${`${query}`}
-        AND comments.topic = ${`${query}`}
-        AND scores.complete = true
-      ORDER BY difference DESC
+    SELECT 
+      users.fname,
+      users.sname,
+      users.id AS userId,
+      scores.rating,
+      scores.recom,
+      comments.id AS commentId,
+      comments.comment,
+      comments.likes,
+      comments.dislikes,
+      comments.likes - comments.dislikes AS difference,
+      likes.liked,
+      likes.left_like,
+      likes.id AS likeId
+    FROM users
+    FULL OUTER JOIN scores ON users.id = scores.user_id
+    FULL OUTER JOIN comments ON users.id = comments.user_id
+    LEFT JOIN likes ON 
+      (comments.id = likes.comment_id AND likes.user_id =  ${`${id}`})
+    WHERE
+      users.id = scores.user_id
+      AND users.id = comments.user_id
+      AND scores.topic_id =  ${`${query}`}
+      AND comments.topic_id =  ${`${query}`}
+      AND scores.complete = true
+    ORDER BY difference DESC
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch comments.');
+  }
+}
+
+export async function fetchAllUserComments(
+  id: string
+){
+  noStore();
+  try {
+    const topics = await sql`
+    SELECT 
+    users.id AS userId,
+      scores.rating,
+      scores.recom,
+      comments.id AS commentId,
+      comments.comment,
+      topics.topic,
+      categories.category
+    FROM users
+    FULL OUTER JOIN scores ON users.id = scores.user_id
+    FULL OUTER JOIN comments ON users.id = comments.user_id
+    LEFT JOIN topics ON comments.topic_id = topics.id
+    LEFT JOIN categories ON topics.category = categories.id
+    WHERE
+      users.id = scores.user_id
+      AND users.id = comments.user_id
+      AND users.id = ${`${id}`}
+    ORDER BY categories.category DESC
     `;
 
     return topics.rows;
@@ -405,6 +467,7 @@ export async function fetchEndorsementsPerTopic(
       SELECT 
         users.fname,
         users.sname,
+        users.id AS userid,
         scores.rating,
         scores.recom,
         scores.endorsements
@@ -422,9 +485,58 @@ export async function fetchEndorsementsPerTopic(
   }
 }
 
+export async function fetchEndorsementsByCat(
+  query: string,
+  id: string,
+){
+  noStore();
+  try {
+    const topics = await sql`
+    SELECT 
+      endorsements.id,
+      endorsements.reason,
+      topics.topic,
+      categories.category,
+      users.fname,
+      users.sname
+    FROM endorsements
+      LEFT JOIN topics ON endorsements.topic_id = topics.id
+      LEFT JOIN categories ON topics.category = categories.id
+      LEFT JOIN users ON endorsements.giver_id = users.id
+    WHERE endorsements.reciever_id=${`${id}`}
+    AND categories.id=${`${query}`};
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch users endorsements.');
+  }
+}
+
+export async function fetchEndorsementAmmout(
+  id: string,
+){
+  noStore();
+  try {
+    const topics = await sql`
+    SELECT 
+      COUNT(*) AS total
+    FROM endorsements
+    WHERE endorsements.reciever_id=${`${id}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total user endorsements.');
+  }
+}
+
+
 export async function fetchUserComment(
   query: string,
-  email: string
+  id: string
 ){
   noStore();
   try {
@@ -438,8 +550,8 @@ export async function fetchUserComment(
         users.id = scores.user_id
         AND users.id = comments.user_id
         AND scores.topic_id = ${`${query}`}
-        AND comments.topic = ${`${query}`}
-        AND users.email = ${`${email}`}
+        AND comments.topic_id = ${`${query}`}
+        AND users.id = ${`${id}`}
     `;
 
     return topics.rows;
@@ -449,6 +561,7 @@ export async function fetchUserComment(
   }
 }
 
+
 export async function fetchUserId(
   email: string
 ){
@@ -456,7 +569,8 @@ export async function fetchUserId(
   try {
     const topics = await sql`
       SELECT 
-        id
+        id,
+        pre_name
       FROM users
       WHERE
         email = ${`${email}`}
@@ -484,12 +598,56 @@ export async function checkExists(
         scores.user_id = ${`${id}`}
         AND scores.topic_id = ${`${topic}`}
         AND comments.user_id = ${`${id}`}
-        AND comments.topic = ${`${topic}`}
+        AND comments.topic_id = ${`${topic}`}
     `;
 
     return topics.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch user id.');
+    throw new Error('Failed to check comment exists.');
+  }
+}
+
+export async function fetchUserInfo(
+  id: string
+){
+  noStore();
+  try {
+    const topics = await sql`
+      SELECT 
+        *,
+        teams.team_name,
+        teams.boss
+      FROM users
+      LEFT JOIN teams ON users.team = teams.id
+      WHERE
+        users.id = ${`${id}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch user profile.');
+  }
+}
+
+export async function fetchBossName(
+  id: string
+){
+  noStore();
+  try {
+    const topics = await sql`
+      SELECT 
+        fname,
+        sname
+      FROM users
+      WHERE
+        id = ${`${id}`}
+    `;
+
+    return topics.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch manager information.');
   }
 }

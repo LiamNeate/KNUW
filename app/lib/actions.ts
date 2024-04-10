@@ -134,7 +134,7 @@ export async function updateRating(formData: FormData){
             VALUES (${topicId}, ${userId}, ${rating}, ${reccs}, true, 0);
         `;
         await sql`
-            INSERT INTO comments (comment, topic, user_id, likes, dislikes)
+            INSERT INTO comments (comment, topic_id, user_id, likes, dislikes)
             VALUES (${comment}, ${topicId}, ${userId}, 0, 0);
         `;
     }
@@ -143,8 +143,99 @@ export async function updateRating(formData: FormData){
 
 }
 
-/*
-            UPDATE comments 
-            SET (comment = ${comment}, likes = 0, dislikes = 0);
-            WHERE comments.id = ${checkingExists[0].commentsId};
-*/
+export async function addLike(formData: FormData){
+    let likes = parseInt(formData.get('likeAmm')?.toString()!) + 1;
+    let dislikes = parseInt(formData.get('dislikeAmm')?.toString()!);
+    if (formData.get('likeId')){
+        if (formData.get('wasReacted')?.toString() == "true"){
+            dislikes = dislikes - 1;
+        }
+
+        await sql`
+            UPDATE likes 
+            SET left_like = true, liked = true
+            WHERE likes.id = ${`${formData.get('likeId')}`};
+        `;
+
+    } else {
+        await sql`
+            INSERT INTO likes (comment_id, user_id, left_like, liked)
+            VALUES (${`${formData.get('commentId')}`}, ${`${formData.get('userId')}`}, true, true);
+        `;
+    }
+
+    await sql`
+        UPDATE comments 
+        SET likes = ${likes}, dislikes = ${dislikes}
+        WHERE id = ${`${formData.get('commentId')}`};
+    `;
+
+    revalidatePath(usePathname.toString());
+}
+
+export async function removeLike(formData: FormData){
+    let likes = parseInt(formData.get('likeAmm')?.toString()!) - 1;
+
+    await sql`
+        UPDATE likes 
+        SET left_like = false, liked = false
+        WHERE likes.id = ${`${formData.get('likeId')}`};
+    `;
+
+    await sql`
+        UPDATE comments 
+        SET likes = ${likes}
+        WHERE id = ${`${formData.get('commentId')}`};
+    `;
+
+    revalidatePath(usePathname.toString());
+}
+
+export async function addDislike(formData: FormData){
+    let dislikes = parseInt(formData.get('dislikeAmm')?.toString()!) + 1;
+    let likes = parseInt(formData.get('likeAmm')?.toString()!);
+    if (formData.get('likeId')){
+        if (formData.get('wasReacted')?.toString() == "true"){
+            likes = likes - 1;
+        }
+
+        await sql`
+            UPDATE likes 
+            SET left_like = true, liked = false
+            WHERE likes.id = ${`${formData.get('likeId')}`};
+        `;
+
+    } else {
+        await sql`
+            INSERT INTO likes (comment_id, user_id, left_like, liked)
+            VALUES (${`${formData.get('commentId')}`}, ${`${formData.get('userId')}`}, true, false);
+        `;
+    }
+
+    await sql`
+        UPDATE comments 
+        SET likes = ${likes}, dislikes = ${dislikes}
+        WHERE id = ${`${formData.get('commentId')}`};
+    `;
+
+    revalidatePath(usePathname.toString());
+}
+
+export async function removeDislike(formData: FormData){
+
+    let dislikes = parseInt(formData.get('dislikeAmm')?.toString()!) - 1;
+
+    await sql`
+        UPDATE likes 
+        SET left_like = false, liked = false
+        WHERE likes.id = ${`${formData.get('likeId')}`};
+    `;
+
+    await sql`
+        UPDATE comments 
+        SET dislikes = ${dislikes}
+        WHERE id = ${`${formData.get('commentId')}`};
+    `;
+
+    revalidatePath(usePathname.toString());
+}

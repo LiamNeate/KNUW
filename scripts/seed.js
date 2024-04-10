@@ -7,6 +7,7 @@ const {
   comments,
   scores,
   endorsements,
+  likes,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
 
@@ -17,7 +18,8 @@ async function seedTeams(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS teams (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        team_name VARCHAR(255) NOT NULL
+        team_name VARCHAR(255) NOT NULL,
+        boss UUID NOT NULL
       );
     `;
 
@@ -27,8 +29,8 @@ async function seedTeams(client) {
     const insertedTeams = await Promise.all(
       teams.map(async (team) => {
         return client.sql`
-        INSERT INTO teams (id, team_name)
-        VALUES (${team.id}, ${team.team})
+        INSERT INTO teams (id, team_name, boss)
+        VALUES (${team.id}, ${team.team}, ${team.boss})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -58,9 +60,19 @@ async function seedUsers(client) {
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
         team UUID NOT NULL REFERENCES teams (id) ON DELETE CASCADE,
-        boss UUID REFERENCES users (id) ON DELETE SET NULL,
+        role VARCHAR(255) NOT NULL,
         admin BOOLEAN,
-        pre_name VARCHAR(255)
+        pre_name VARCHAR(255),
+        about VARCHAR(255),
+        hobbies VARCHAR(255),
+        want_learn VARCHAR(255),
+        top_knowledge VARCHAR(255),
+        phone VARCHAR(15),
+        email_allow BOOLEAN,
+        teams BOOLEAN,
+        whatsapp BOOLEAN,
+        linkedin VARCHAR(255),
+        website VARCHAR(255)
       );
     `;
 
@@ -71,8 +83,8 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, fname, sname, email, password, team, boss, admin, pre_name)
-        VALUES (${user.id}, ${user.fname}, ${user.sname}, ${user.email}, ${hashedPassword}, ${user.team}, ${user.boss}, ${user.admin}, ${user.pre_name})
+        INSERT INTO users (id, fname, sname, email, password, team, role, admin, pre_name, about, hobbies, want_learn, top_knowledge, phone, email_allow, teams, whatsapp, linkedin, website)
+        VALUES (${user.id}, ${user.fname}, ${user.sname}, ${user.email}, ${hashedPassword}, ${user.team}, ${user.role}, ${user.admin}, ${user.pre_name}, ${user.about}, ${user.hobbies}, ${user.want_learn}, ${user.top_knowledge}, ${user.phone}, ${user.email_allow}, ${user.teams}, ${user.whatsapp}, ${user.linkedin}, ${user.website})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -192,7 +204,7 @@ async function seedComments(client) {
     const insertedComments = await Promise.all(
       comments.map(
         (comment) => client.sql`
-        INSERT INTO comments (id, comment, topic, user_id, likes, dislikes)
+        INSERT INTO comments (id, comment, topic_id, user_id, likes, dislikes)
         VALUES (${comment.id}, ${comment.comment}, ${comment.topic}, ${comment.user_id}, ${comment.likes}, ${comment.dislikes})
         ON CONFLICT (id) DO NOTHING;
       `,
@@ -270,8 +282,8 @@ async function seedEndorsements(client) {
     const insertedEndorsements = await Promise.all(
       endorsements.map(
         (endorsement) => client.sql`
-        INSERT INTO endorsements (topic_id, giver_id, reciever_id, reason)
-        VALUES (${endorsement.topic}, ${endorsement.giver}, ${endorsement.reciever}, ${endorsement.reason})
+        INSERT INTO endorsements (id, topic_id, giver_id, reciever_id, reason)
+        VALUES (${endorsement.id}, ${endorsement.topic}, ${endorsement.giver}, ${endorsement.reciever}, ${endorsement.reason})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -289,6 +301,44 @@ async function seedEndorsements(client) {
   }
 }
 
+async function seedLikes(client) {
+  try {
+    //Create "endorsements" table if it doesn't exist
+    const createTable = await client.sql`
+    CREATE TABLE IF NOT EXISTS likes (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      comment_id UUID NOT NULL REFERENCES comments (id) ON DELETE CASCADE,
+      user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+      left_like BOOLEAN,
+      liked BOOLEAN
+    );
+    `;
+
+    console.log(`Created "likes" table`);
+
+    // Insert data into the "endorsements" table
+    const insertedLikes = await Promise.all(
+      likes.map(
+        (like) => client.sql`
+        INSERT INTO likes (id, comment_id, user_id, left_like, liked)
+        VALUES (${like.id}, ${like.comment}, ${like.user}, ${like.lefLike}, ${like.liked})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedLikes.length} likes`);
+
+    return {
+      createTable,
+      likes: insertedLikes,
+    };
+  } catch (error) {
+    console.error('Error seeding likes:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -299,6 +349,7 @@ async function main() {
   await seedComments(client);
   await seedScores(client);
   await seedEndorsements(client);
+  await seedLikes(client);
 
   await client.end();
 }
